@@ -17,19 +17,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Étape 2 : Configurer Node.js (si vous travaillez sur un projet Node.js)
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+    # Étape 2 : Configurer JDK
+    - name: Setup JDK
+      uses: actions/setup-java@v3
       with:
-        node-version: 16 # Utiliser Node.js version 16
+        distribution: 'temurin' # Distribution du JDK (peut être temurin, zulu, etc.)
+        java-version: '17' # Version de Java (ajustez en fonction de votre projet)
 
-    # Étape 3 : Installer les dépendances
-    - name: Install dependencies
-      run: npm install
+    # Étape 3 : Construire le projet avec Maven
+    - name: Build with Maven
+      run: mvn clean install -DskipTests=true # Construire le projet sans exécuter les tests
 
     # Étape 4 : Exécuter les tests
     - name: Run Tests
-      run: npm test
+      run: mvn test
 
     # Étape 5 (Optionnel) : Télécharger les résultats des tests comme artefacts
     - name: Upload Test Results (Optional)
@@ -37,4 +38,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: ./test-results # Dossier contenant les résultats des tests (modifiez selon vos besoins)
+        path: target/surefire-reports/ # Répertoire contenant les rapports de tests Maven
